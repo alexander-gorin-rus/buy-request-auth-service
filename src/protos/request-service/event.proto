@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package requestService;
+
+message NewRequestCreated {
+  string requestId = 1;
+  repeated string tags = 2;
+  string description = 3;
+  string locale = 4;
+  string link = 5;
+}

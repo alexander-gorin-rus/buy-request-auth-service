@@ -1,0 +1,233 @@
+syntax = "proto3";
+
+package dealService;
+
+import "google/protobuf/timestamp.proto";
+import "deal-service/error.proto";
+
+service DealService {
+  rpc CreateDeal (CreateDeal.Request) returns (CreateDeal.Response);
+  rpc UpdateDeal (UpdateDeal.Request) returns (UpdateDeal.Response);
+  rpc GetDeals (GetDeals.Request) returns (GetDeals.Response);
+  rpc CreateOffer (CreateOffer.Request) returns (CreateOffer.Response);
+  rpc GetOffers (GetOffers.Request) returns (GetOffers.Response);
+  rpc GetOffersConsumer (GetOffersConsumer.Request) returns (GetOffersConsumer.Response);
+  rpc UpdateOffer (UpdateOffer.Request) returns (UpdateOffer.Response);
+  rpc DeleteOffer (DeleteOffer.Request) returns (DeleteOffer.Response);
+}
+
+message Deal {
+  string id = 1;
+  string requestId = 2;
+  string offerId = 3;
+  string status = 4;
+  string sellerId = 5;
+  string consumerId = 6;
+  string additionalConditions = 7;
+  string expiratedAt = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+}
+
+message Media {
+  string fileOriginalName = 1;
+  string mimetype = 2;
+  string fileNameMinio = 3;
+  Bucket bucket = 4;
+}
+
+enum Bucket {
+  offer = 1;
+  product = 2;
+}
+
+message Sort {
+  string orderBy = 1;
+  string orderName = 2;
+}
+
+message CreateDeal {
+  message Request {
+    NewDeal deal = 1;
+  }
+  message NewDeal {
+    string requestId = 1;
+    string offerId = 2;
+    string status = 3;
+    string additionalConditions = 4;
+    string sellerId = 5;
+    string consumerId = 6;
+    string expiratedAt = 7;
+  }
+  message Response {
+    string id = 1;
+    Error error = 2;
+    bool isSuccess = 3;
+  }
+}
+
+message UpdateDeal {
+  message Request {
+    UpdateDeal deal = 1;
+    string userId = 2;
+  }
+  message UpdateDeal {
+    string id = 1;
+    string status = 2;
+    string additionalConditions = 3;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+message GetDeals {
+  message Request {
+    string userId = 1;
+    string dealId = 2;
+    int32 page = 3;
+    int32 perPage = 4;
+    repeated DealStatus statuses = 5;
+    repeated Sort sort = 6;
+  }
+  message Response {
+    Error error = 1;
+    repeated Deal data = 2;
+    PageInfo pageInfo = 3;
+  }
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 perPage = 2;
+  int32 totalCount = 3;
+  int32 totalPageCount = 4;
+}
+
+enum DealStatus {
+  IN_PROGRESS = 1;
+  PAID = 2;
+  CANCELED = 3;
+  COMPLETED = 4;
+  CUSTOMER_PAID = 5;
+  DISPUTE = 6;
+}
+
+enum StatusType {
+  CANCELED = 1;
+  CONFIRMED = 2;
+  IN_PROGRESS = 3;
+  CREATED = 4;
+  IN_DEAL = 5;
+  IS_HOLD = 6;
+  PAID = 7;
+  CUSTOMER_PAID = 8;
+  CANCELED_BY_CONSUMER = 9;
+  CANCELED_BY_SELLER = 10;
+}
+
+message OfferEntity {
+  string id = 1;
+  string userId = 2;
+  string requestId = 3;
+  string productId = 4;
+  int32 price = 5;
+  string description = 6;
+  bool ecogood = 7;
+  StatusType status = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  bool isDraft = 11;
+  string additionalConditions = 13;
+  string cover = 14;
+  repeated Media media = 15;
+  string title = 16;
+  Deal deal = 17;
+}
+
+message CreateOffer {
+  message Request {
+    NewOffer offer = 1;
+  }
+  message NewOffer {
+    string userId = 1;
+    string requestId = 2;
+    string productId = 3;
+    int32 price = 4;
+    string description = 5;
+    bool ecogood = 6;
+    StatusType status = 7;
+    bool isDraft = 8;
+    string additionalConditions = 9;
+    string cover = 10;
+    repeated Media media = 11;
+    string title = 12;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message GetOffers {
+  message Request {
+    string userId = 1;
+    string offerId = 2;
+    int32 page = 3;
+    int32 perPage = 4;
+    repeated Sort sort = 5;
+    repeated StatusType statuses = 6;
+  }
+  message Response {
+    repeated OfferEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}
+
+message UpdateOffer {
+  message Request {
+    Update offer = 1;
+  }
+  message Update {
+    string id = 1;
+    StatusType status = 2;
+    bool isDraft = 3;
+    string additionalConditions = 4;
+    string description = 5;
+    int32 price = 6;
+    string cover = 7;
+    repeated Media media = 8;
+    string title = 9;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message DeleteOffer {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message GetOffersConsumer {
+  message Request {
+    repeated string requestIds = 1;
+    int32 page = 2;
+    int32 perPage = 3;
+    string offerId = 4;
+    repeated Sort sort = 5;
+    repeated StatusType statuses = 6;
+  }
+  message Response {
+    repeated OfferEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}

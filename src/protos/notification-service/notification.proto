@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package notificationService;
+
+import "google/protobuf/timestamp.proto";
+import "notification-service/error.proto";
+
+service NotificationService {
+  rpc GetUserNotificationsByUserId (GetUserNotificationsByUserId.Request) returns (GetUserNotificationsByUserId.Response) {}
+  rpc CreateUserNotification (CreateUserNotification.Request) returns (CreateUserNotification.Response) {}
+  rpc SetNotificationIsRead (SetNotificationIsRead.Request) returns (SetNotificationIsRead.Response);
+  rpc SetAllNotificationIsRead (SetAllNotificationIsRead.Request) returns (SetAllNotificationIsRead.Response);
+  rpc SetNotificationIsArchive (SetNotificationIsArchive.Request) returns (SetNotificationIsArchive.Response);
+  rpc SetAllNotificationIsArchive (SetAllNotificationIsArchive.Request) returns (SetAllNotificationIsArchive.Response);
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 perPage = 2;
+  int32 totalCount = 3;
+  int32 totalPageCount = 4;
+}
+
+message Sort {
+  string orderBy = 1;
+  string orderName = 2;
+}
+
+enum Types {
+  NEW_REQUEST_CREATED = 1;
+  NEW_OFFER_CREATED = 2;
+  OFFER_CANCELED = 3;
+  OFFER_CONFIRMED = 4;
+  DEAL_PAID = 5;
+  DEAL_CANCELED = 6;
+  DEAL_CUSTOMER_PAID = 7;
+  DEAL_DISPUTE = 8;
+  NEW_MESSAGE = 9;
+  DEAL_COMPLETED = 10;
+  NEW_DEAL_CREATED = 11;
+}
+
+message Notification {
+  string id = 1;
+  string userId = 2;
+  string message = 3;
+  string type = 4;
+  string subjectId = 5;
+  bool isRead = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+  bool archive = 9;
+}
+
+message CreateUserNotification {
+  message Request {
+    string userId = 1;
+    string type = 2;
+    string message = 3;
+    string subjectId = 4;
+  }
+
+  message Response {
+    message Response {
+      Error error = 1;
+      bool isSuccess = 2;
+    }
+  }
+}
+
+message GetUserNotificationsByUserId {
+  message Request {
+    string userId = 1;
+    bool isRead = 2;
+    string type = 3;
+    int32 page = 4;
+    int32 perPage = 5;
+    repeated Types types = 6;
+    repeated Sort sort = 7;
+    int32 periodTime = 8;
+    bool archive = 9;
+  }
+
+  message Response {
+    Error error = 1;
+    repeated Notification data = 2;
+    PageInfo pageInfo = 3;
+  }
+}
+
+message SetNotificationIsRead {
+  message Request {
+    repeated string ids = 1;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+
+message SetAllNotificationIsRead {
+  message Request {
+    string userId = 1;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+
+message SetNotificationIsArchive {
+  message Request {
+    repeated string ids = 1;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+
+message SetAllNotificationIsArchive {
+  message Request {
+    string userId = 1;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package notificationService;
+
+message Error {
+  enum Code {
+    UNKNOWN_ERROR = 0;
+    ACCESS_TOKEN_NOT_FOUND = 2;
+    VALIDATE_ERROR = 3;
+  }
+
+  message Detail {
+    Code code = 1;
+    repeated string messages = 2;
+  }
+
+  repeated Detail details = 1;
+}

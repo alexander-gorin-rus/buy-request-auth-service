@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+package productService;
+
+import "google/protobuf/timestamp.proto";
+import "product-service/error.proto";
+
+service ProductService {
+  rpc CreateTag (CreateTag.Request) returns (CreateTag.Response);
+  rpc GetTags (GetTags.Request) returns (GetTags.Response);
+  rpc CreateProduct (CreateProduct.Request) returns (CreateProduct.Response);
+  rpc DeleteProduct (DeleteProduct.Request) returns (DeleteProduct.Response);
+  rpc UpdateProduct (UpdateProduct.Request) returns (UpdateProduct.Response);
+  rpc GetProducts (GetProducts.Request) returns (GetProducts.Response);
+  rpc GetProductsForOffer (GetProductsForOffer.Request) returns (GetProductsForOffer.Response);
+}
+
+enum StatusType {
+  UNKNOWN_TYPE = 0;
+  CANCELED = 1;
+  CONFIRMED = 2;
+  ON_MODERATION = 3;
+}
+
+message Media {
+  string fileOriginalName = 1;
+  string mimetype = 2;
+  string fileNameMinio = 3;
+}
+
+message ProductEntity {
+  string id = 1;
+  string userId = 2;
+  string production = 3;
+  string name = 4;
+  string model = 5;
+  repeated string tags = 6;
+  string productionGuarantee = 7;
+  string description = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  repeated Media media = 11;
+  StatusType status = 12;
+  string cover = 13;
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 perPage = 2;
+  int32 totalCount = 3;
+  int32 totalPageCount = 4;
+}
+
+message Sort {
+  string orderBy = 1;
+  string orderName = 2;
+}
+
+message Update {
+  string id = 1;
+  string userId = 2;
+  string description = 3;
+  string name = 4;
+  StatusType status = 5;
+  repeated Media media = 6;
+  string production = 7;
+  repeated string tags = 8;
+  string productionGuarantee = 9;
+  string model = 10;
+  string cover = 11;
+}
+
+message CreateProduct {
+  message Request {
+    ProductEntity product = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message DeleteProduct {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message UpdateProduct {
+  message Request {
+    Update product = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message GetProducts {
+  message Request {
+    string userId = 1;
+    string productId = 2;
+    int32 page = 3;
+    int32 perPage = 4;
+    StatusType status = 5;
+    repeated Sort sort = 6;
+  }
+  message Response {
+    repeated ProductEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}
+
+message GetProductsForOffer {
+  message Request {
+    int32 page = 1;
+    int32 perPage = 2;
+    repeated Sort sort = 3;
+    repeated string tagNames = 4;
+    repeated string productIds = 5;
+  }
+  message Response {
+    repeated ProductEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}
+
+message Tag {
+  string id = 1;
+  string name = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+  string titleEn = 5;
+  string titleRu = 6;
+}
+
+message CreateTag {
+  message Request {
+    NewTag tag = 1;
+  }
+  message NewTag {
+    string name = 1;
+    string titleRu = 2;
+    string titleEn = 3;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+
+message GetTags {
+  message Request {
+    string tagId = 1;
+  }
+  message Response {
+    Error error = 1;
+    repeated Tag data = 2;
+  }
+}

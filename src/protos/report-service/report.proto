@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package reportService;
+
+import "google/protobuf/timestamp.proto";
+import "report-service/error.proto";
+
+service ReportService {
+  rpc CreateReport (CreateReport.Request) returns (CreateReport.Response);
+  rpc DeleteReport (DeleteReport.Request) returns (DeleteReport.Response);
+  rpc UpdateReport (UpdateReport.Request) returns (UpdateReport.Response);
+  rpc GetReports (GetReports.Request) returns (GetReports.Response);
+}
+
+message ReportEntity {
+  string id = 1;
+  string entityId = 2;
+  string userId = 3;
+  string description = 4;
+  string subject = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 perPage = 2;
+  int32 totalCount = 3;
+  int32 totalPageCount = 4;
+}
+
+message Update {
+  string id = 1;
+  string entityId = 2;
+  string userId = 3;
+  string description = 4;
+  string subject = 5;
+}
+
+message CreateReport {
+  message Request {
+    ReportEntity report = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message DeleteReport {
+  message Request {
+    string id = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message UpdateReport {
+  message Request {
+    Update report = 1;
+  }
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message GetReports {
+  message Request {
+    string reportId = 1;
+    int32 page = 2;
+    int32 perPage = 3;
+  }
+  message Response {
+    repeated ReportEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package notificationService;
+
+message NewRequestCreated {
+  string requestId = 1;
+  repeated string tags = 2;
+  string description = 3;
+  string link = 5;
+}
+
+message NewUserCreated {
+  string authId = 1;
+  string email = 2;
+  string link = 3;
+  string locale = 4;
+}
+
+message NewNotification {
+  string userId = 1;
+  string type = 2;
+  string message = 3;
+  string subjectId = 4;
+}
+
+message NewCodeGenerated {
+  string authId = 1;
+  string email = 2;
+  string code = 3;
+}
+
+message PasswordChange {
+  string email = 1;
+  string authId = 2;
+}

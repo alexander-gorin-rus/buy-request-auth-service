@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package feedbackService;
+
+import "google/protobuf/timestamp.proto";
+import "feedback-service/error.proto";
+
+service FeedbackService {
+  rpc CreateRating (CreateRating.Request) returns (CreateRating.Response);
+  rpc GetEntityRatings (GetEntityRatings.Request) returns (GetEntityRatings.Response);
+  rpc GetUserRatings (GetUserRatings.Request) returns (GetUserRatings.Response);
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 perPage = 2;
+  int32 totalCount = 3;
+  int32 totalPageCount = 4;
+}
+
+message Rating {
+  string id = 1;
+  string entityId = 2;
+  string entityName = 3;
+  string authorId = 4;
+  int32 value = 5;
+  string comment = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+message CreateRating {
+  message Request {
+    NewRating rating = 1;
+  }
+  message NewRating {
+    string entityId = 1;
+    string entityName = 2;
+    string authorId = 3;
+    int32 value = 4;
+    string comment = 5;
+  }
+  message Response {
+    Error error = 1;
+    bool isSuccess = 2;
+  }
+}
+
+message GetEntityRatings {
+  message Request {
+    string entityId = 1;
+  }
+  message Response {
+    Error error = 1;
+    repeated Rating data = 2;
+  }
+}
+
+message GetUserRatings {
+  message Request {
+    string userId = 1;
+    int32 page = 2;
+    int32 perPage = 3;
+  }
+  message Response {
+    Error error = 1;
+    double userRating = 2;
+    repeated Rating data = 3;
+    PageInfo pageInfo = 4;
+  }
+}

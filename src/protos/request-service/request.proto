@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package requestService;
+
+import "request-service/error.proto";
+
+service RequestService {
+  rpc GetRequestsByUserId (GetRequestsByUserId.Request) returns (GetRequestsByUserId.Response) {}
+  rpc GetRequestsById (GetRequestsById.Request) returns (GetRequestsById.Response) {}
+  rpc GetRequestsByTags (GetRequestsByTags.Request) returns (GetRequestsByTags.Response) {}
+  rpc CreateRequest (CreateRequest.Request) returns (CreateRequest.Response) {}
+  rpc UpdateRequest (UpdateRequest.Request) returns (UpdateRequest.Response) {}
+}
+
+message PageInfo {
+  int32 page = 1;
+  int32 perPage = 2;
+  int32 totalCount = 3;
+  int32 totalPageCount = 4;
+}
+
+message Sort {
+  string orderBy = 1;
+  string orderName = 2;
+}
+
+message Media {
+  string fileOriginalName = 1;
+  string mimetype = 2;
+  string fileNameMinio = 3;
+  Bucket bucket = 4;
+}
+
+enum Bucket {
+  request = 1;
+  product = 2;
+}
+
+enum RequestStatus {
+  IN_PROGRESS = 1;
+  DISABLE = 2;
+  DELETEABLE = 3;
+  DEFAULT_IN_PROGRESS = 4;
+}
+
+message RequestEntity {
+  string id = 1;
+  string userId = 2;
+  string description = 3;
+  int32 budget = 4;
+  repeated string tags = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  repeated string products = 8;
+  bool isDraft = 9;
+  bool readyForAnalogues = 10;
+  string cover = 11;
+  repeated Media media = 12;
+  RequestStatus status = 13;
+  string title = 14;
+  bool delete = 15;
+}
+
+message GetRequestsByUserId {
+  message Request {
+    string userId = 1;
+    string requestId = 2;
+    int32 page = 3;
+    int32 perPage = 4;
+    repeated Sort sort = 5;
+    repeated RequestStatus statuses = 6;
+  }
+
+  message Response {
+    repeated RequestEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}
+
+message GetRequestsById {
+  message Request {
+    string requestId = 2;
+  }
+
+  message Response {
+    repeated RequestEntity data = 1;
+    Error error = 3;
+  }
+}
+
+message GetRequestsByTags {
+  message Request {
+    repeated string tags = 1;
+    string requestId = 2;
+    int32 page = 3;
+    int32 perPage = 4;
+    repeated Sort sort = 5;
+    repeated RequestStatus statuses = 6;
+  }
+
+  message Response {
+    repeated RequestEntity data = 1;
+    PageInfo pageInfo = 2;
+    Error error = 3;
+  }
+}
+
+message CreateRequest {
+  message Request {
+    string locale = 1;
+    RequestEntity request = 2;
+  }
+
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}
+
+message UpdateRequest {
+  message Request {
+    RequestEntity request = 2;
+  }
+
+  message Response {
+    bool isSuccess = 1;
+    Error error = 2;
+  }
+}

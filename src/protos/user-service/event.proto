@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package userService;
+
+message TestEventUserServiceCommitted {
+  string test = 1;
+  repeated string array = 2;
+}
